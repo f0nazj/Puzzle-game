@@ -1,82 +1,116 @@
-# Puzzle Game
+# Puzzle Game 拼圖遊戲
 
-這是一個簡單的 Java Swing 拼圖遊戲專案，包含登入、註冊以及 4x4 拼圖玩法。這個專案適合用來練習 GUI、事件處理與資源載入。
+Java Swing 製作的 4x4 拼圖小遊戲，包含登入、註冊、圖片分類切換、步數統計、勝利判定與完整圖片預覽。
 
-## 從 GitHub 遊玩方式
+## 遊戲功能
 
-1. 在自己的電腦上安裝 Java JDK（建議 JDK 11 以上）。
-2. 從 GitHub 下載或複製倉庫：
-   ```bash
-   git clone https://github.com/f0nazj/Puzzle-game.git
-   cd Puzzle-game
-   ```
-3. 編譯並執行遊戲：
-   ```bash
-   javac gui/ui/App.java gui/ui/itheima/*.java
-   java gui.ui.App
-   ```
+- 登入與註冊畫面
+- 4x4 拼圖玩法
+- 隨機產生可解的拼圖盤面
+- 支援 WASD 與方向鍵操作
+- 支援更換圖片分類：
+  - 動物
+  - 動漫
+  - 車
+- 按住 `Tab` 可暫時查看完整圖片
+- 按 `V` 可直接完成拼圖，方便測試
+- 完成拼圖後顯示勝利畫面
 
-> 注意：這是一個 Swing 桌面應用程式，需要有圖形介面環境才能開啟。如果在命令列環境出現 `HeadlessException`，表示目前環境沒有顯示器（例如某些遠端伺服器或 container）。
+## 預設帳號
 
-
-## 功能介紹
-
-- 登入／註冊介面
-- 4x4 拼圖遊戲
-- 支援 WASD 與方向鍵操控
-- 支援重新遊戲、重新登入、關閉遊戲
-- 支援更換圖片分類（動物、動漫、車）
-- 按住 `Tab` 可查看完整拼圖
-
-## 遊戲規則
-
-- 移動空白格可將拼圖塊推動到正確位置
-- 步數會在畫面左上角顯示
-- 拼圖完成後會顯示勝利畫面
-
-## 執行方式
-
-1. 編譯 Java 檔案：
-   ```bash
-   javac gui/ui/App.java gui/ui/itheima/*.java
-   ```
-2. 執行遊戲：
-   ```bash
-   java gui.ui.App
-   ```
-
-## 打包成單一 JAR
-
-如果你想讓別人直接用一個檔案執行，請在專案目錄下執行：
-
-```bash
-chmod +x build.sh run.sh
-./build.sh
+```text
+帳號：admin
+密碼：123
 ```
 
-打包完成後會產生 `PuzzleGame.jar`，然後執行：
+也可以在登入頁點「註冊」新增帳號。註冊資料目前只存在程式記憶體中，關閉程式後不會保存。
+
+## 下載遊玩
+
+到 GitHub 的 **Releases** 下載對應平台的檔案：
+
+- macOS：下載 `PuzzleGame-1.0.dmg`
+- Windows：下載 `PuzzleGame-windows.zip`，解壓縮後執行 `PuzzleGame.exe`
+
+如果專案有建立 `v` 開頭的 tag，例如 `v1.0.0`，GitHub Actions 會自動建立 Release 並附上 Mac/Windows 下載檔。
+
+## 本機執行
+
+需要 JDK 21，或至少 JDK 14 以上。
 
 ```bash
-java -jar PuzzleGame.jar
+javac -encoding UTF-8 -d build/classes $(find gui -name "*.java")
+cp -r gui/ui/images build/classes/gui/ui/
+java -cp build/classes gui.ui.App
 ```
 
-也可以使用 `run.sh` 直接執行：
+## 本機打包
+
+### macOS
 
 ```bash
-./run.sh
+chmod +x build-mac.sh
+./build-mac.sh
 ```
 
-> 注意：JAR 仍然是桌面應用程式，需要圖形介面環境才能顯示畫面。
+輸出位置：
 
-## 快捷鍵
+```text
+build/package/PuzzleGame-1.0.dmg
+```
 
-- `W` / `↑`: 向上
-- `S` / `↓`: 向下
-- `A` / `←`: 向左
-- `D` / `→`: 向右
-- `Tab`: 查看完整拼圖
-- `V`: 直接完成拼圖（測試專用）
+### Windows
 
-## 注意
+在 Windows 的 cmd 執行：
 
-請確認圖片資源已正確存在於 `gui/ui/images/` 目錄下，否則遊戲可能無法正常載入圖片。
+```bat
+build-windows.bat
+```
+
+輸出位置：
+
+```text
+build\package\PuzzleGame\PuzzleGame.exe
+```
+
+可以把整個 `build\package\PuzzleGame` 資料夾壓縮成 zip 分享。
+
+## GitHub 自動打包
+
+本專案已加入 GitHub Actions：
+
+```text
+.github/workflows/package-puzzle-game.yml
+```
+
+觸發方式：
+
+- push 到 `主要` 或 `main`
+- 手動在 GitHub Actions 頁面點 `Run workflow`
+- push `v*` tag，例如 `v1.0.0`
+
+一般 push 會產生 Actions Artifacts；push tag 則會額外建立 GitHub Release。
+
+建立 Release 的常用指令：
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+## 專案結構
+
+```text
+gui/ui/
+├── App.java                  # 程式進入點
+├── itheima/
+│   ├── LoginJFrame.java      # 登入畫面
+│   ├── RegisterJFrame.java   # 註冊畫面
+│   ├── GameJFrame.java       # 拼圖主畫面與遊戲邏輯
+│   └── User.java             # 使用者資料物件
+└── images/                   # 背景圖、拼圖素材、勝利圖
+```
+
+## 備註
+
+圖片資源使用 classpath 載入，因此在 IDE、JAR、jpackage 打包後都能正常顯示。
